@@ -1,0 +1,15 @@
+User's module 
+    - add DB
+    - integrate with DB
+    - nearest washroom proper algo
+    - get user's current location
+
+
+connect shopper's module 
+    - add images, analyze and give score/ammenities 
+    - populate DB/
+    - popup when someone want to come-in 
+
+
+Names Inso
+    - talk to "LooLoo"  our AI bot available on whatsapp
