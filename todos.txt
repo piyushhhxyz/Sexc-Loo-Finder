@@ -1,3 +1,9 @@
+progress:
+    integrate aws for image 
+    get location
+    connect with wp: get location
+    show deets:
+
 User's module 
     - add DB
     - integrate with DB
@@ -13,3 +19,5 @@ connect shopper's module
 
 Names Inso
     - talk to "LooLoo"  our AI bot available on whatsapp
+
+

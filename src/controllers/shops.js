@@ -30,7 +30,7 @@ async function getNearestWashrooms(req, res) {
     }
 
     const nearestShops = await Shop.findNearestShops(parseFloat(longitude), parseFloat(latitude));
-    // res.json("nearestShops");
+    res.json(nearestShops);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
