@@ -1,5 +1,5 @@
 progress:
-    integrate aws for image 
+    integrate aws for image // postpone 
     get location
     connect with wp: get location
     show deets:
