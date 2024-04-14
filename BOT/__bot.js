@@ -95,12 +95,9 @@ client.on('message', async(message) => {
         if (isNaN(number) || number < 1 || number > 3) await message.reply('Invalid SHOP. Please select a SHOP from 1 to 3.');
         else if (nearestShops.length >= number) {
             const destinationNumber = '918953815800'; 
-            const messageText = `Heyoo! You have a new visitor! ${timestampTo12Hour(message.timestamp)}. 
-            A user is heading your way. 
-            Be ready to welcome them with a smile. 
-            They're just 0.2kms away`;
+            const messageText = `Heyoo! You have a new visitor! ${timestampTo12Hour(message.timestamp)}.\nA user is heading your way. \nBe ready to welcome them with a smile.\nThey're just 0.2kms away`;
             await client.sendMessage(destinationNumber + '@c.us', messageText); // Added @c.us
-            await message.reply('done, shop partner has been notified');
+            await message.reply(`DONE, shop partner has been notified \n You are free to use their restrooms 🚀`);
         }
     }
     else {
