@@ -1,7 +1,7 @@
-const { Client, MessageMedia, LocalAuth } = require('whatsapp-web.js');
+const { Client, MessageMedia, LocalAuth, Location} = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const axios = require('axios');
-// const { getAIGeneratedAnswer }  = require('./assistant');
+const { getAIGeneratedAnswer }  = require('./assistant');
 
 
 const client = new Client({
@@ -18,9 +18,12 @@ client.on('ready', () => console.log('Client is ready!'));
 client.on('qr', qr => {
     qrcode.generate(qr, {small: true});
 });
+
+let nearestShops = [];
 client.on('message', async(message) => {
-    if (message.body.toLowerCase() === 'hi') {
-        await message.reply('Hello!');
+  
+    if (message.body.toLowerCase() === 'hii') {
+        await message.reply('Hello, I am LooLoo AI!');
     } 
     else if (message.location) {
         const { latitude, longitude } = message.location;
@@ -32,7 +35,6 @@ client.on('message', async(message) => {
 
             if (response.ok) {
                 const address = data.display_name;
-                console.log('Current location:', address);
                 await message.reply(`Finding royal-loos near: ${address}`);
 
                 const nearestShopsResponse = await axios.get('http://localhost:3000/api/shops/nearest', {
@@ -44,17 +46,16 @@ client.on('message', async(message) => {
                         latitude: latitude.toString(),
                     },
                 });
-                const nearestShops = nearestShopsResponse.data;
+                nearestShops = nearestShopsResponse.data;
 
                 for (let i = 0; i < Math.min(nearestShops.length, 3); i++) {
                     setTimeout(async () => {
                         const shop = nearestShops[i];
                         const distanceInKm = Math.floor(shop.distance / 1000);
-                        const randomNum = Math.floor(Math.random() * 7) + 1;
                         const imagePath = `BOT/assets/images/7.png`;
                         const media = MessageMedia.fromFilePath(imagePath);
-                        const messageText = `Name: ${shop.name} Genre: ${shop.genre} Distance: ${(distanceInKm)} kms
-                        `;
+                        const messageText = `Name: ${shop.name}\nGenre: ${shop.genre}\nDistance: ${(distanceInKm)} kms`;
+
                         client.sendMessage(message.from, media, { caption: messageText });
                     },(i + 1) * 2000); 
                 }
@@ -67,33 +68,58 @@ client.on('message', async(message) => {
             await message.reply(`LooLoo🔭 is facing an error fetching location`);
         }
     } 
-    // else {
-    //     const answer = await getAIGeneratedAnswer(message.body);
-    //     await message.reply(answer);
-    // }
-});
+    else if (message.body.toLowerCase().startsWith('select')) {
+        const number = parseInt(message.body.split(' ')[1]);
+        if (isNaN(number) || number < 1 || number > 3) {
+            await message.reply('Invalid SHOP. Please select a SHOP from 1 to 3.');
+        } 
+        else if (nearestShops.length >= number) {
+            const selectedShop = nearestShops[number - 1];
+            const distanceInKm = Math.floor(selectedShop.distance / 1000);
+            const messageText = `
+                Name: ${selectedShop.name} 
+                Distance: ${distanceInKm} kms
+            `;
+            await message.reply(messageText);
 
-client.on('chat-update', async (chat) => {
-    if (chat.unreadCount > 0) {
-        const messages = await chat.fetchMessages();
-        const lastMessage = messages[messages.length - 1];
-        if (lastMessage.fromMe) {
-            await lastMessage.setTyping();
+            const latitude = 12.9834;
+            const longitude = 77.5837;
+            const location = new Location(latitude, longitude);
+            client.sendMessage(message.from, location);
+        } else {
+            await message.reply(`No shop found for selection ${number}.`);
         }
     }
+    else if (message.body.toLowerCase().startsWith('confirm')) {
+        const number = parseInt(message.body.split(' ')[1]);
+        if (isNaN(number) || number < 1 || number > 3) await message.reply('Invalid SHOP. Please select a SHOP from 1 to 3.');
+        else if (nearestShops.length >= number) {
+            const destinationNumber = '918953815800'; 
+            const messageText = `Heyoo! You have a new visitor! ${timestampTo12Hour(message.timestamp)}. 
+            A user is heading your way. 
+            Be ready to welcome them with a smile. 
+            They're just 0.2kms away`;
+            await client.sendMessage(destinationNumber + '@c.us', messageText); // Added @c.us
+            await message.reply('done, shop partner has been notified');
+        }
+    }
+    else {
+        const answer = await getAIGeneratedAnswer(message.body);
+        await message.reply(answer);
+    }
 });
-// Send voice message
-async function sendVoiceMessage(chatId, audioBuffer) {
-    const media = new MessageMedia('audio/ogg', audioBuffer);
-    const chat = await client.getChatById(chatId);
-    await chat.sendMessage(media, { sendAudioAsVoice: true });
-}
 
-// Send media message (image, video, document)
-async function sendMediaMessage(chatId, mediaType, mediaURL, caption) {
-    const media = new MessageMedia(mediaType, mediaURL);
-    const chat = await client.getChatById(chatId);
-    await chat.sendMessage(media, { caption });
+function timestampTo12Hour(timestamp) {
+    const date = new Date(timestamp * 1000); // Convert timestamp to milliseconds
+    let hours = date.getHours();
+    const minutes = ('0' + date.getMinutes()).slice(-2); // Add leading zero if needed
+    const seconds = ('0' + date.getSeconds()).slice(-2); // Add leading zero if needed
+    const meridiem = hours >= 12 ? 'PM' : 'AM';
+    
+    // Convert hours to 12-hour format
+    hours = hours % 12 || 12;
+
+    return `${hours}:${minutes} ${meridiem}`;
 }
 
 client.initialize();

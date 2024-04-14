@@ -170,7 +170,7 @@ const kochiShops = [
     targetCustomers: { ageGroups: ['Adults'], gender: 'Female' },
   },
   {
-    name: 'FitZone Gym',
+    name: 'FitZone Gyms',
     location: { type: 'Point', coordinates: [9.9495, 76.2676] },
     washroomImages: ['https://www.pinterest.com/pin/314055774000562524/'],
     genre: 'Gym',
@@ -241,8 +241,8 @@ const bangaloreShops = [
 dbConnect();
 async function seedMockData() {
   try {
-    await Shop.deleteMany(); 
-    await Shop.insertMany(blrShops, { timeout: 30000 }); // Increase timeout to 30 seconds
+    // await Shop.deleteMany(); 
+    await Shop.insertMany(bangaloreShops, { timeout: 30000 }); // Increase timeout to 30 seconds
     console.log('Mock data seeded successfully.');
     mongoose.disconnect(); 
   } catch (err) {
