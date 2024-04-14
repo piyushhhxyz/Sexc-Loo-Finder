@@ -23,7 +23,25 @@ client.on('message', async(message) => {
     }
     else if (message.location) {
         const { latitude, longitude } = message.location;
-        await message.reply(`You shared your location: Latitude ${latitude}, Longitude ${longitude}`);
+        console.log(latitude, longitude)
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`;
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            if (response.ok) {
+              const address = data.display_name;
+              console.log('Current location:', address);
+              await message.reply(`finding royal-loos near: ${address}`);
+
+            } else {
+                console.error('Failed to fetch location:', data.error || response.statusText);
+                await message.reply(`LooLoo🔭 is facing error fetching location`);
+            }
+          } catch (error) {
+              console.error('Error fetching location:', error.message);
+              await message.reply(`LooLoo🔭 is facing error fetching location`);
+          }
     }
     // else {
     //     const answer = await getAIGeneratedAnswer(message.body);
