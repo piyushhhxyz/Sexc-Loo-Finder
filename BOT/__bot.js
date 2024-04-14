@@ -51,12 +51,14 @@ client.on('message', async(message) => {
                 for (let i = 0; i < Math.min(nearestShops.length, 3); i++) {
                     setTimeout(async () => {
                         const shop = nearestShops[i];
-                        const distanceInKm = Math.floor(shop.distance / 1000);
-                        const imagePath = `BOT/assets/images/7.png`;
-                        const media = MessageMedia.fromFilePath(imagePath);
-                        const messageText = `Name: ${shop.name}\nGenre: ${shop.genre}\nDistance: ${(distanceInKm)} kms`;
+                        // const distanceInKm = Math.floor(shop.distance / 1000);
+                        const imagePath = shop.washroomImages[0];
+                        console.log(imagePath)
+                        const media = await MessageMedia.fromUrl('https://github.com/piyushhhxyz/Sexc-Loo-Finder/assets/111758968/3108a6d3-b49c-4ab4-b2fa-dc2b71d48793', { unsafeMime: true });
+                        // const messageText = `Name: ${shop.name}\nGenre: ${shop.genre}\nDistance: ${(distanceInKm)} kms\n`;
 
-                        client.sendMessage(message.from, media, { caption: messageText });
+                        await client.sendMessage(message.from, media, { caption: 'messageText' });
+                        // await message.reply(messageText);
                     },(i + 1) * 2000); 
                 }
             } else {

@@ -7,7 +7,7 @@ const blrShops = [
   {
     name: 'Cafe Coffee Day',
     location: { type: 'Point', coordinates: [12.9716, 77.5946] },
-    washroomImages: ['https://www.pinterest.com/pin/505036545697580713/'],
+    washroomImages: ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRP788Hx5vg772lDwwBY44HRI3Q9BBDtE1RsA&s'],
     genre: 'Cafe',
     targetCustomers: { ageGroups: ['Adults', 'Teens'], gender: 'Male' },
   },
@@ -147,78 +147,6 @@ const delShops = [
     targetCustomers: { ageGroups: ['Adults', 'Seniors'], gender: 'Other' },
   },
 ];
-const kochiShops = [
-  {
-    name: 'Kochi Coffee Hub',
-    location: { type: 'Point', coordinates: [9.9667, 76.2833] },
-    washroomImages: ['https://www.pinterest.com/pin/505036545697580713/'],
-    genre: 'Cafe',
-    targetCustomers: { ageGroups: ['Adults', 'Teens'], gender: 'Male' },
-  },
-  {
-    name: 'Seafood Delight Restaurant',
-    location: { type: 'Point', coordinates: [9.9312, 76.2673] },
-    washroomImages: ['https://www.pinterest.com/pin/pin-de-dianice-rcabrera-en-arquitectura-en-2023--560768591115481005/'],
-    genre: 'Restaurant',
-    targetCustomers: { ageGroups: ['Children', 'Adults'], gender: 'Male' },
-  },
-  {
-    name: 'Ethnic Threads Clothing Store',
-    location: { type: 'Point', coordinates: [9.9399, 76.2602] },
-    washroomImages: ['https://www.pinterest.com/pin/667517976048052794/'],
-    genre: 'Clothing Store',
-    targetCustomers: { ageGroups: ['Adults'], gender: 'Female' },
-  },
-  {
-    name: 'FitZone Gyms',
-    location: { type: 'Point', coordinates: [9.9495, 76.2676] },
-    washroomImages: ['https://www.pinterest.com/pin/314055774000562524/'],
-    genre: 'Gym',
-    targetCustomers: { ageGroups: ['Adults'], gender: 'Male' },
-  },
-  {
-    name: 'HealthPlus Pharmacy',
-    location: { type: 'Point', coordinates: [9.9736, 76.2884] },
-    washroomImages: ['https://www.bellabathrooms.co.uk/blog/bathroom-lighting-ideas/'],
-    genre: 'Pharmacy',
-    targetCustomers: { ageGroups: ['Adults', 'Seniors'], gender: 'Other' },
-  },
-  {
-    name: 'Bookworm Paradise Bookstore',
-    location: { type: 'Point', coordinates: [9.9317, 76.2673] },
-    washroomImages: ['https://www.pinterest.com/pin/100416266684987956/?mt=login'],
-    genre: 'Bookstore',
-    targetCustomers: { ageGroups: ['Children', 'Teens'], gender: 'Other' },
-  },
-  {
-    name: 'Coastal Bliss Hotel',
-    location: { type: 'Point', coordinates: [9.9603, 76.2763] },
-    washroomImages: ['https://www.pinterest.com/pin/644014815492082399/'],
-    genre: 'Hotel',
-    targetCustomers: { ageGroups: ['Adults'], gender: 'Female' },
-  },
-  {
-    name: 'Cheers Bar',
-    location: { type: 'Point', coordinates: [9.9619, 76.2795] },
-    washroomImages: ['https://www.pinterest.com/pin/644014815492082399/'],
-    genre: 'Bar',
-    targetCustomers: { ageGroups: ['Adults'], gender: 'Male' },
-  },
-  {
-    name: 'Glamour Zone Salon',
-    location: { type: 'Point', coordinates: [9.9746, 76.2907] },
-    washroomImages: ['https://www.pinterest.com/pin/644014815492082399/'],
-    genre: 'Salon',
-    targetCustomers: { ageGroups: ['Adults'], gender: 'Female' },
-  },
-  {
-    name: 'Super Savers Mart',
-    location: { type: 'Point', coordinates: [9.9615, 76.2768] },
-    washroomImages: ['https://www.pinterest.com/pin/644014815492082399/'],
-    genre: 'Supermarket',
-    targetCustomers: { ageGroups: ['Adults', 'Seniors'], gender: 'Other' },
-  },
-];
 const bangaloreShops = [
   {
     name: 'Indiranagar Cafe',
@@ -241,8 +169,8 @@ const bangaloreShops = [
 dbConnect();
 async function seedMockData() {
   try {
-    // await Shop.deleteMany(); 
-    await Shop.insertMany(bangaloreShops, { timeout: 30000 }); // Increase timeout to 30 seconds
+    await Shop.deleteMany(); 
+    await Shop.insertMany(blrShops, { timeout: 30000 }); // Increase timeout to 30 seconds
     console.log('Mock data seeded successfully.');
     mongoose.disconnect(); 
   } catch (err) {

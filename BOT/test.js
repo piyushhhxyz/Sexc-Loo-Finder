@@ -13,9 +13,12 @@ client.on('ready', () => {
     console.log('WhatsApp Bot is ready!');
 });
 
+client.on('message', async (message) => {
+    if (msg.body === 'hii') {
+        const media = await MessageMedia.fromUrl('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRP788Hx5vg772lDwwBY44HRI3Q9BBDtE1RsA&s', { unsafeMime: true });
+        await client.sendMessage(message.from, media, { caption: 'this is my caption' });
 
-client.on('message', async (msg) => {
-    
+    }
 });
 
 // Start the WhatsApp bot
