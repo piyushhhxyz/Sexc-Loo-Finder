@@ -35,9 +35,6 @@ client.on('message', async(message) => {
                 console.log('Current location:', address);
                 await message.reply(`Finding royal-loos near: ${address}`);
 
-                //dummy
-                longitude_dummy = 77.5946;
-                latitude_dummy = 12.9716;
                 const nearestShopsResponse = await axios.get('http://localhost:3000/api/shops/nearest', {
                     headers: {
                         'Content-Type': 'application/json',
@@ -49,18 +46,17 @@ client.on('message', async(message) => {
                 });
                 const nearestShops = nearestShopsResponse.data;
 
-                // Send each nearest shop in a separate message with a delay
                 for (let i = 0; i < Math.min(nearestShops.length, 3); i++) {
                     setTimeout(async () => {
                         const shop = nearestShops[i];
-                        const messageText = `
-                            Name: ${shop.name}
-                            Genre: ${shop.genre}
-                            Distance: ${shop.distance.toFixed(2)} meters
-                            Washroom Images: ${shop.washroomImages.join(', ')}
+                        const distanceInKm = Math.floor(shop.distance / 1000);
+                        const randomNum = Math.floor(Math.random() * 7) + 1;
+                        const imagePath = `BOT/assets/images/7.png`;
+                        const media = MessageMedia.fromFilePath(imagePath);
+                        const messageText = `Name: ${shop.name} Genre: ${shop.genre} Distance: ${(distanceInKm)} kms
                         `;
-                        await message.reply(messageText);
-                    }, (i + 1) * 1000); // 1-second delay between each message
+                        client.sendMessage(message.from, media, { caption: messageText });
+                    },(i + 1) * 2000); 
                 }
             } else {
                 console.error('Failed to fetch location:', data.error || response.statusText);

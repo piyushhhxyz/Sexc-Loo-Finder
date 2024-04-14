@@ -219,9 +219,22 @@ const kochiShops = [
     targetCustomers: { ageGroups: ['Adults', 'Seniors'], gender: 'Other' },
   },
 ];
-
-
-
+const bangaloreShops = [
+  {
+    name: 'Indiranagar Cafe',
+    location: { type: 'Point', coordinates: [12.9719, 77.6412] },
+    washroomImages: ['https://images.unsplash.com/photo-1577471697278-bce0e43cca84'],
+    genre: 'Cafe',
+    targetCustomers: { ageGroups: ['Adults', 'Teens'], gender: 'Male' },
+  },
+  {
+    name: 'Brigade Road Restaurant',
+    location: { type: 'Point', coordinates: [12.9716, 77.6079] },
+    washroomImages: ['https://images.unsplash.com/photo-1540331547168-3cdaf6a7483a'],
+    genre: 'Restaurant',
+    targetCustomers: { ageGroups: ['Children', 'Adults'], gender: 'Male' },
+  },
+]
 
   
   
