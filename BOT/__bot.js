@@ -51,14 +51,11 @@ client.on('message', async(message) => {
                 for (let i = 0; i < Math.min(nearestShops.length, 3); i++) {
                     setTimeout(async () => {
                         const shop = nearestShops[i];
-                        // const distanceInKm = Math.floor(shop.distance / 1000);
-                        const imagePath = shop.washroomImages[0];
-                        console.log(imagePath)
-                        const media = await MessageMedia.fromUrl('https://github.com/piyushhhxyz/Sexc-Loo-Finder/assets/111758968/3108a6d3-b49c-4ab4-b2fa-dc2b71d48793', { unsafeMime: true });
-                        // const messageText = `Name: ${shop.name}\nGenre: ${shop.genre}\nDistance: ${(distanceInKm)} kms\n`;
+                        const distanceInKm = Math.floor(shop.distance / 1000);
+                        const media = await MessageMedia.fromUrl(shop.washroomImages[0], { unsafeMime: true });
+                        const messageText = `Name: ${shop.name}\nGenre: ${shop.genre}\nDistance: ${(distanceInKm)} kms\n`;
 
-                        await client.sendMessage(message.from, media, { caption: 'messageText' });
-                        // await message.reply(messageText);
+                        await client.sendMessage(message.from, media, { caption: messageText });
                     },(i + 1) * 2000); 
                 }
             } else {
@@ -78,14 +75,12 @@ client.on('message', async(message) => {
         else if (nearestShops.length >= number) {
             const selectedShop = nearestShops[number - 1];
             const distanceInKm = Math.floor(selectedShop.distance / 1000);
-            const messageText = `
-                Name: ${selectedShop.name} 
-                Distance: ${distanceInKm} kms
-            `;
-            await message.reply(messageText);
+            const media = await MessageMedia.fromUrl(selectedShop.washroomImages[0], { unsafeMime: true });
+            const messageText = `Name: ${selectedShop.name}\nDistance: ${distanceInKm} kms\nRating: ${selectedShop.rating}⭐\n Facilities: ${selectedShop.address}`;
+            await client.sendMessage(message.from, media, { caption: messageText });
 
-            const latitude = 12.9834;
-            const longitude = 77.5837;
+            const latitude = 12.9715987;
+            const longitude = 77.5945627;
             const location = new Location(latitude, longitude);
             client.sendMessage(message.from, location);
         } else {
@@ -99,7 +94,7 @@ client.on('message', async(message) => {
             const destinationNumber = '918953815800'; 
             const messageText = `Heyoo! You have a new visitor! ${timestampTo12Hour(message.timestamp)}.\nA user is heading your way. \nBe ready to welcome them with a smile.\nThey're just 0.2kms away`;
             await client.sendMessage(destinationNumber + '@c.us', messageText); // Added @c.us
-            await message.reply(`DONE, shop partner has been notified \n You are free to use their restrooms 🚀`);
+            await message.reply(`DONE, shop partner has been notified \nYou are welcome to use their restrooms 🚀`);
         }
     }
     else {

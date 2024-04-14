@@ -14,8 +14,8 @@ client.on('ready', () => {
 });
 
 client.on('message', async (message) => {
-    if (msg.body === 'hii') {
-        const media = await MessageMedia.fromUrl('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRP788Hx5vg772lDwwBY44HRI3Q9BBDtE1RsA&s', { unsafeMime: true });
+    if (message.body === 'hii') {
+        const media = await MessageMedia.fromUrl('https://imgtr.ee/images/2024/04/14/5385afb84925f51e6912498c64a8aec4.jpeg', { unsafeMime: true });
         await client.sendMessage(message.from, media, { caption: 'this is my caption' });
 
     }
