@@ -13,13 +13,15 @@ client.on('ready', () => {
     console.log('WhatsApp Bot is ready!');
 });
 
-client.on('message', async (message) => {
-    if (message.body === 'hii') {
-        const media = await MessageMedia.fromUrl('https://imgtr.ee/images/2024/04/14/5385afb84925f51e6912498c64a8aec4.jpeg', { unsafeMime: true });
-        await client.sendMessage(message.from, media, { caption: 'this is my caption' });
-
+client.on('message', async (msg) => {
+    const chat = await msg.getChat();
+    if (chat) {
+        chat.sendStateTyping();
+        // setTimeout(() => {
+            chat.sendMessage('I am a bot');
+        // }, 2000);
     }
 });
 
-// Start the WhatsApp bot
 client.initialize();
+

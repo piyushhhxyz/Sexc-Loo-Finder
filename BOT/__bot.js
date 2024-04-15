@@ -2,6 +2,8 @@ const { Client, MessageMedia, LocalAuth, Location} = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const axios = require('axios');
 const { getAIGeneratedAnswer }  = require('./assistant');
+const fs = require('fs');
+const { createObjectCsvWriter } = require('csv-writer');
 
 
 const client = new Client({
@@ -12,18 +14,47 @@ const client = new Client({
     },
     authStrategy: new LocalAuth(),
 });
-
 client.on('ready', () => console.log('Client is ready!'));
+client.on('qr', qr => qrcode.generate(qr, {small: true}));
 
-client.on('qr', qr => {
-    qrcode.generate(qr, {small: true});
+const csvWriter = createObjectCsvWriter({
+    path: 'USERs.csv',
+    header: [
+        { id: 'timestamp', title: 'Timestamp' },
+        { id: 'sender', title: 'Sender' },
+        { id: 'messageCount', title: 'Message Count' },
+        { id: 'message', title: 'Message' },
+    ],
 });
-
+const messageCounts = {};
 let nearestShops = [];
+const logAndWriteToCSV = async(data) => {
+    await csvWriter.writeRecords([data]);
+}
+
+
 client.on('message', async(message) => {
-  
+
+    const chat = await message.getChat();
+    const sender = message.from;
+    const messageContent = message.body.toLowerCase().trim();
+    messageCounts[sender] = (messageCounts[sender] || 0) + 1;
+
+    const logData = {
+        timestamp: new Date().toLocaleString(),
+        sender: sender,
+        messageCount: messageCounts[sender],
+        message: messageContent,
+    };
+
+    await logAndWriteToCSV(logData); // Log and write data to CSV
+
     if (message.body.toLowerCase() === 'hii') {
-        await message.reply('Hello, I am LooLoo AI!');
+        chat.sendStateTyping();
+        setTimeout(() => {
+            chat.sendMessage('Hello, I am LooLoo AI!');
+        }, 2000);
+        // await message.reply('Hello, I am LooLoo AI!');
     } 
     else if (message.location) {
         const { latitude, longitude } = message.location;
@@ -35,7 +66,9 @@ client.on('message', async(message) => {
 
             if (response.ok) {
                 const address = data.display_name;
-                await message.reply(`Finding royal-loos near: ${address}`);
+                chat.sendStateTyping();
+                chat.sendMessage(`Finding royal-loos near: ${address}`);
+                // await message.reply(`Finding royal-loos near: ${address}`);
 
                 const nearestShopsResponse = await axios.get('http://localhost:3000/api/shops/nearest', {
                     headers: {
@@ -54,23 +87,31 @@ client.on('message', async(message) => {
                         const distanceInKm = Math.floor(shop.distance / 1000);
                         const media = await MessageMedia.fromUrl(shop.washroomImages[0], { unsafeMime: true });
                         const messageText = `Name: ${shop.name}\nGenre: ${shop.genre}\nDistance: ${(distanceInKm)} kms\n`;
-
-                        await client.sendMessage(message.from, media, { caption: messageText });
+                        
+                        chat.sendStateTyping();
+                        chat.sendMessage(media, { caption: messageText });
+                        // await client.sendMessage(message.from, media, { caption: messageText });
                     },(i + 1) * 2000); 
                 }
             } else {
                 console.error('Failed to fetch location:', data.error || response.statusText);
-                await message.reply(`LooLoo🔭 is facing an error fetching location`);
+                chat.sendStateTyping();
+                chat.sendMessage(`LooLoo🔭 is facing an error fetching location`);
+                // await message.reply(`LooLoo🔭 is facing an error fetching location`);
             }
         } catch (error) {
             console.error('Error fetching location:', error.message);
-            await message.reply(`LooLoo🔭 is facing an error fetching location`);
+            chat.sendStateTyping();
+            chat.sendMessage(`LooLoo🔭 is facing an error fetching location`);
+            // await message.reply(`LooLoo🔭 is facing an error fetching location`);
         }
     } 
     else if (message.body.toLowerCase().startsWith('select')) {
         const number = parseInt(message.body.split(' ')[1]);
         if (isNaN(number) || number < 1 || number > 3) {
-            await message.reply('Invalid SHOP. Please select a SHOP from 1 to 3.');
+            chat.sendStateTyping();
+            chat.sendMessage('Invalid SHOP. Please select a SHOP from 1 to 3.');
+            // await message.reply('Invalid SHOP. Please select a SHOP from 1 to 3.');
         } 
         else if (nearestShops.length >= number) {
             const selectedShop = nearestShops[number - 1];
@@ -82,9 +123,13 @@ client.on('message', async(message) => {
             const latitude = 12.9715987;
             const longitude = 77.5945627;
             const location = new Location(latitude, longitude);
-            client.sendMessage(message.from, location);
+            chat.sendStateTyping();
+            chat.sendMessage(location);
+            // client.sendMessage(message.from, location);
         } else {
-            await message.reply(`No shop found for selection ${number}.`);
+            chat.sendStateTyping();
+            chat.sendMessage(`No shop found for selection ${number}.`);
+            // await message.reply(`No shop found for selection ${number}.`);
         }
     }
     else if (message.body.toLowerCase().startsWith('confirm')) {
@@ -94,12 +139,16 @@ client.on('message', async(message) => {
             const destinationNumber = '918953815800'; 
             const messageText = `Heyoo! You have a new visitor! ${timestampTo12Hour(message.timestamp)}.\nA user is heading your way. \nBe ready to welcome them with a smile.\nThey're just 0.2kms away`;
             await client.sendMessage(destinationNumber + '@c.us', messageText); // Added @c.us
-            await message.reply(`DONE, shop partner has been notified \nYou are welcome to use their restrooms 🚀`);
+            chat.sendStateTyping();
+            chat.sendMessage('DONE, shop partner has been notified \nYou are welcome to use their restrooms 🚀');
+            // await message.reply(`DONE, shop partner has been notified \nYou are welcome to use their restrooms 🚀`);
         }
     }
     else {
+        chat.sendStateTyping();
         const answer = await getAIGeneratedAnswer(message.body);
-        await message.reply(answer);
+        chat.sendMessage(answer);
+        // await message.reply(answer);
     }
 });
 
