@@ -93,6 +93,8 @@ client.on('message', async(message) => {
                         // await client.sendMessage(message.from, media, { caption: messageText });
                     },(i + 1) * 2000); 
                 }
+                chat.sendStateTyping();
+                chat.sendMessage('type "select 1/2/3" to select and expand the shop details');
             } else {
                 console.error('Failed to fetch location:', data.error || response.statusText);
                 chat.sendStateTyping();
@@ -126,6 +128,10 @@ client.on('message', async(message) => {
             chat.sendStateTyping();
             chat.sendMessage(location);
             // client.sendMessage(message.from, location);
+            setTimeout(() => {
+                chat.sendStateTyping();
+                chat.sendMessage('type "confirm 1/2/3" to confirm that shop');
+            }, 3000);
         } else {
             chat.sendStateTyping();
             chat.sendMessage(`No shop found for selection ${number}.`);
