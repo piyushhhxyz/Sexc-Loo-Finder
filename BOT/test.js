@@ -14,8 +14,9 @@ client.on('ready', () => console.log('WhatsApp Bot is ready!'));
 client.on('message', async (msg) => {
     const chat = await msg.getChat();
     if (chat) {
+        const media = MessageMedia.fromFilePath('BOT/data/1.jpeg');
         chat.sendStateTyping();
-            chat.sendMessage('I am a bot');
+        chat.sendMessage(media, { caption: 'messageText' });
     }
 });
 

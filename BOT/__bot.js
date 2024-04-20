@@ -80,14 +80,19 @@ client.on('message', async(message) => {
                     },
                 });
                 nearestShops = nearestShopsResponse.data;
+                console.log(nearestShops)
 
                 for (let i = 0; i < Math.min(nearestShops.length, 3); i++) {
                     setTimeout(async () => {
                         const shop = nearestShops[i];
                         const distanceInKm = Math.floor(shop.distance / 1000);
-                        const media = await MessageMedia.fromUrl(shop.washroomImages[0], { unsafeMime: true });
+                        let media;
+                        if(i===0) media = MessageMedia.fromFilePath('BOT/data/1.jpeg');
+                        if (i===1) media = MessageMedia.fromFilePath('BOT/data/2.jpeg');
+                        if (i===2) media = MessageMedia.fromFilePath('BOT/data/3.jpeg');
                         const messageText = `Name: ${shop.name}\nGenre: ${shop.genre}\nDistance: ${(distanceInKm)} kms\n`;
-                        
+                        console.log(messageText)
+
                         chat.sendStateTyping();
                         chat.sendMessage(media, { caption: messageText });
                         // await client.sendMessage(message.from, media, { caption: messageText });
@@ -142,8 +147,9 @@ client.on('message', async(message) => {
         const number = parseInt(message.body.split(' ')[1]);
         if (isNaN(number) || number < 1 || number > 3) await message.reply('Invalid SHOP. Please select a SHOP from 1 to 3.');
         else if (nearestShops.length >= number) {
-            const destinationNumber = '918953815800'; 
+            const destinationNumber = '919355420878'; 
             const messageText = `Heyoo! You have a new visitor! ${timestampTo12Hour(message.timestamp)}.\nA user is heading your way. \nBe ready to welcome them with a smile.\nThey're just 0.2kms away`;
+            console.log(firstMessage.from, destinationNumber, messageText)
             await client.sendMessage(destinationNumber + '@c.us', messageText); // Added @c.us
             chat.sendStateTyping();
             chat.sendMessage('DONE, shop partner has been notified \nYou are welcome to use their restrooms 🚀');
